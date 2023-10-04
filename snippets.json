@@ -1,9 +1,9 @@
 {
 	"variables": {
+		"lang": "ja"
 	},
 		"html": {
 			"snippets": {
-				"lang": "ja"
 		}
 	}
 }
