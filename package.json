@@ -1,0 +1,13 @@
+{
+  "name": "@junkifurukawa/website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Junki Furukawa's personal website",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'Static site - no build required'",
+    "clean": "echo 'Static site - no clean required'"
+  },
+  "keywords": ["website", "personal", "portfolio"],
+  "author": "Junki Furukawa"
+} 
