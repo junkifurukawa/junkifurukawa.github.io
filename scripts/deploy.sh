@@ -15,6 +15,13 @@ echo "🎯 ターゲット: $TARGET"
 echo "📦 共通ライブラリをビルド中..."
 yarn workspace @junkifurukawa/shared run build
 
+# 振り返りアプリをビルド
+echo "🤖 振り返り執事をビルド中..."
+cd packages/retrobutler-app
+npm run build
+cp -r dist/ ../website/retrobutler/
+cd ../../
+
 case $TARGET in
     "all")
         echo "🚀 全アプリケーションをビルド中..."
@@ -27,10 +34,24 @@ case $TARGET in
     
     "website")
         echo "🌐 メインWebサイトをデプロイ準備中..."
-        # GitHub Pagesの場合はpackages/websiteの内容をルートにコピー
+        
+        # 振り返りアプリをビルド
+        echo "🤖 振り返り執事をビルド中..."
+        cd packages/retrobutler-app
+        npm run build
+        cd ../../
+        
+        # GitHub Pagesの場合はルートにファイルをコピー
         if [ "$2" = "github-pages" ]; then
             echo "📄 GitHub Pages用にファイルをコピー中..."
-            cp -r packages/website/* .
+            cp packages/website/index.html ./
+            cp -r packages/website/assets ./assets 2>/dev/null || true
+            cp -r packages/retrobutler-app/dist ./retrobutler
+            
+            # 振り返りアプリのパスを修正
+            sed -i.bak 's|href="/vite.svg"|href="./vite.svg"|g' retrobutler/index.html
+            rm -f retrobutler/index.html.bak
+            
             echo "✅ GitHub Pagesデプロイ準備完了なのだ！"
         fi
         ;;
