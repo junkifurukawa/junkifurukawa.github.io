@@ -38,9 +38,7 @@ function App() {
 ${mode.questions.map((q, i) => `${i + 1}. ${q}？
 
 
-`).join('')}
----
-実施日:     /   /     所要時間: 約   分`
+`).join('')}`
 
     try {
       await navigator.clipboard.writeText(copyText)

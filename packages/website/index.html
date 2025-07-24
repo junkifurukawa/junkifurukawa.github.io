@@ -6,6 +6,7 @@
     <title>Junki Furukawa | Portfolio</title>
     <link rel="stylesheet" href="assets/css/base.css?v=1.0">
     <link rel="stylesheet" href="assets/css/main.css?v=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
     <header>
@@ -27,6 +28,129 @@
                 <li>Like Button Component</li>
                 <li>Monorepo Development Environment</li>
             </ul>
+        </section>
+
+        <!-- 振り返りアプリのプレビュー -->
+        <section>
+            <h2>🤖 振り返り執事 - プレビュー</h2>
+            <p>あなたに最適な振り返り手法をご提案いたします</p>
+            
+            <!-- App.tsxの内容を静的HTMLとして表示 -->
+            <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                <div class="max-w-2xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">振り返り執事</h1>
+                        <p class="text-xl text-gray-600">
+                            あなたに最適な振り返り手法をご提案いたします
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                            現在の状況をお聞かせください
+                        </h2>
+                        
+                        <form id="retroForm" class="space-y-8">
+                            <!-- 気分選択 -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-700 mb-4">💭 今の気分は？</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="モヤモヤしてる" class="mr-3">
+                                        <span class="text-gray-700">モヤモヤしてる</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="充実してる" class="mr-3">
+                                        <span class="text-gray-700">充実してる</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="感情的になってる" class="mr-3">
+                                        <span class="text-gray-700">感情的になってる</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="混乱してる" class="mr-3">
+                                        <span class="text-gray-700">混乱してる</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="落ち込み気味" class="mr-3">
+                                        <span class="text-gray-700">落ち込み気味</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="さっぱりしたい" class="mr-3">
+                                        <span class="text-gray-700">さっぱりしたい</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="feeling" value="疲れ気味" class="mr-3">
+                                        <span class="text-gray-700">疲れ気味</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 目的選択 -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-700 mb-4">🎯 何をしたい？</h3>
+                                <div class="space-y-2">
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="問題解決したい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">問題解決したい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="学びを抽出したい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">学びを抽出したい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="感情も含めて整理したい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">感情も含めて整理したい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="多角的に分析したい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">多角的に分析したい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="体系的に深く考えたい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">体系的に深く考えたい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="シンプルに整理したい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">シンプルに整理したい</span>
+                                    </label>
+                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="purpose" value="ポジティブに振り返りたい" class="mr-3 mt-1">
+                                        <span class="text-gray-700">ポジティブに振り返りたい</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 時間選択 -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-700 mb-4">⏰ どのくらい時間をかけたい？</h3>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="time" value="5-10分" class="mr-3">
+                                        <span class="text-gray-700">5-10分</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="time" value="15-30分" class="mr-3">
+                                        <span class="text-gray-700">15-30分</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                                        <input type="radio" name="time" value="30-45分" class="mr-3">
+                                        <span class="text-gray-700">30-45分</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                onclick="window.open('./retrobutler/', '_blank')"
+                                class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
+                            >
+                                完全版で診断を開始 ✨
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section>
