@@ -11,10 +11,6 @@ TARGET=${1:-all}
 echo "🐹 ハム太郎がデプロイを開始するのだ！"
 echo "🎯 ターゲット: $TARGET"
 
-# 共通ライブラリをビルド
-echo "📦 共通ライブラリをビルド中..."
-yarn workspace @junkifurukawa/shared run build
-
 # 振り返りアプリをビルド
 echo "🤖 振り返り執事をビルド中..."
 cd packages/retrobutler-app
