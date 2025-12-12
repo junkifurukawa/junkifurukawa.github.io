@@ -20,10 +20,20 @@ build_retrobutler() {
     cd ../../
 }
 
+# Planning Pokerアプリをビルド（共通処理）
+build_planning_poker() {
+    echo "🃏 Planning Pokerをビルド中..."
+    cd packages/planning-poker-app
+    npm run build
+    cp -r dist/ ../website/planning-poker/
+    cd ../../
+}
+
 case $TARGET in
     "all")
         echo "🚀 全アプリケーションをビルド中..."
         build_retrobutler
+        build_planning_poker
         
         echo "✅ 全アプリケーションのビルドが完了したのだ！"
         echo "📂 Webサイトの配信準備完了: packages/website/"
@@ -33,12 +43,14 @@ case $TARGET in
     "website")
         echo "🌐 メインWebサイトをデプロイ準備中..."
         build_retrobutler
+        build_planning_poker
         
         # GitHub Pagesの場合はルートにファイルをコピー
         if [ "$2" = "github-pages" ]; then
             echo "📄 GitHub Pages用にファイルをコピー中..."
             cp packages/website/index.html ./
             cp -r packages/retrobutler-app/dist ./retrobutler
+            cp -r packages/planning-poker-app/dist ./planning-poker
             
             # 振り返りアプリのパスを修正（絶対パスを相対パスに変換）
             if [ -f retrobutler/index.html ]; then
@@ -51,6 +63,20 @@ case $TARGET in
                     sed -i 's|href="/vite.svg"|href="./vite.svg"|g' retrobutler/index.html
                     sed -i 's|src="/|src="./|g' retrobutler/index.html
                     sed -i 's|href="/|href="./|g' retrobutler/index.html
+                fi
+            fi
+            
+            # Planning Pokerアプリのパスを修正（絶対パスを相対パスに変換）
+            if [ -f planning-poker/index.html ]; then
+                # macOS用のsedコマンド（-i '' を使用）
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    sed -i '' 's|href="/vite.svg"|href="./vite.svg"|g' planning-poker/index.html
+                    sed -i '' 's|src="/|src="./|g' planning-poker/index.html
+                    sed -i '' 's|href="/|href="./|g' planning-poker/index.html
+                else
+                    sed -i 's|href="/vite.svg"|href="./vite.svg"|g' planning-poker/index.html
+                    sed -i 's|src="/|src="./|g' planning-poker/index.html
+                    sed -i 's|href="/|href="./|g' planning-poker/index.html
                 fi
             fi
             
