@@ -146,11 +146,6 @@ function App() {
     return newRoomId
   })
   
-  // 初期URLに?room=パラメータがあったかを記録
-  const [isInvitedRoom, setIsInvitedRoom] = useState<boolean>(() => {
-    return getRoomIdFromUrl() !== null
-  })
-  
   const [userName, setUserName] = useState<string>(() => {
     return localStorage.getItem('planning-poker-username') || ''
   })
@@ -168,29 +163,10 @@ function App() {
     }
   }, [userName])
 
-  // URLパラメータの変更を監視
+  // ルームIDが変更されたらURLを更新
   useEffect(() => {
-    const handlePopState = () => {
-      const urlRoomId = getRoomIdFromUrl()
-      if (urlRoomId && urlRoomId !== roomId) {
-        setRoomId(urlRoomId)
-        setIsInvitedRoom(true)
-      } else if (!urlRoomId && isInvitedRoom) {
-        // URLパラメータが削除された場合（通常は発生しないが念のため）
-        setIsInvitedRoom(false)
-      }
-    }
-    
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [roomId, isInvitedRoom])
-
-  // ルームIDが変更されたらURLを更新（招待されたルームでない場合のみ）
-  useEffect(() => {
-    if (!isInvitedRoom) {
-      setRoomIdInUrl(roomId)
-    }
-  }, [roomId, isInvitedRoom])
+    setRoomIdInUrl(roomId)
+  }, [roomId])
 
   // 投票を読み込む
   const loadVotes = () => {
@@ -220,15 +196,13 @@ function App() {
     }
   }, [userName, roomId, updateUsers])
 
-  // 定期的にユーザーリストと投票を更新（ハートビート）
+  // 定期的にユーザーリストを更新（ハートビート）
   useEffect(() => {
     if (!userName.trim()) return
     
     updateUsers()
-    loadVotes()
     const interval = setInterval(() => {
       updateUsers()
-      loadVotes()
     }, 5000) // 5秒ごとに更新
     
     return () => clearInterval(interval)
@@ -309,9 +283,6 @@ function App() {
   }
 
   const handleCreateNewRoom = () => {
-    // 招待されたルームでは新しいルームを作成できない
-    if (isInvitedRoom) return
-    
     // 現在のルームから退出
     if (userName.trim()) {
       removeUserFromRoom(roomId, userName.trim())
@@ -319,7 +290,6 @@ function App() {
     
     const newRoomId = generateRoomId()
     setRoomId(newRoomId)
-    setIsInvitedRoom(false)
     setSelectedCard(null)
     setVotes([])
     setShowResults(false)
@@ -329,90 +299,86 @@ function App() {
   const stats = calculateStats(votes)
   const userVote = votes.find(v => v.userName === userName.trim())
 
-  // 各ユーザーの投票状況を計算
-  const userVoteStatus = activeUsers.map(user => ({
-    userName: user.userName,
-    hasVoted: votes.some(vote => vote.userName === user.userName),
-    isCurrentUser: user.userName === userName.trim()
-  }))
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
-        <nav className="mb-8 pb-4 border-b border-gray-200">
-          <a href="../../" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-800 transition-colors">
+        <nav className="mb-4 sm:mb-6 md:mb-8 pb-2 sm:pb-3 md:pb-4 border-b border-gray-200">
+          <a href="../../" className="inline-flex items-center text-xs sm:text-sm text-gray-600 hover:text-gray-800 transition-colors">
             <span className="mr-1">←</span>
             ふるじゅんの道具箱に戻る
           </a>
         </nav>
 
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">Planning Poker</h1>
-          <p className="text-xl text-gray-600">
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 sm:mb-3 md:mb-4">Planning Poker</h1>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600">
             チームで見積もりを共有しましょう
           </p>
         </div>
 
         {/* ルーム管理 */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+          <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-4">
+            <div className="flex-1 w-full">
+              <label htmlFor="user-name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 ユーザー名
               </label>
               <input
+                id="user-name"
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder="あなたの名前を入力"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <div className="flex items-end gap-2">
-              <button
-                onClick={handleCopyRoomId}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap font-semibold"
-              >
-                {copied ? '✓ コピー済み' : 'Copy Room!'}
-              </button>
-              {!isInvitedRoom && (
+            <div className="flex flex-col w-full md:w-auto">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 opacity-0 pointer-events-none">
+                操作
+              </label>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleCopyRoomId}
+                  className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 text-xs sm:text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap h-[38px] sm:h-[42px]"
+                >
+                  {copied ? '✓ コピー済み' : 'Copy Room!'}
+                </button>
                 <button
                   onClick={handleCreateNewRoom}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors whitespace-nowrap"
+                  className="flex-1 md:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors whitespace-nowrap h-[38px] sm:h-[42px]"
+                  aria-label="新しいルームを作成"
                 >
                   新しいルーム
                 </button>
-              )}
+              </div>
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-4">
-            {isInvitedRoom 
-              ? 'このルームに参加しています。URLをコピーして他のメンバーにも共有できます。'
-              : 'URLをコピーして、チームメンバーに共有してください'}
+          <p className="text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
+            URLをコピーして、チームメンバーに共有してください
           </p>
         </div>
 
         {/* 入室中のユーザー一覧 */}
         {userName.trim() && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
               入室中のユーザー ({activeUsers.length}人)
             </h3>
             {activeUsers.length === 0 ? (
-              <p className="text-gray-500 text-sm">まだ誰も入室していません</p>
+              <p className="text-gray-500 text-xs sm:text-sm">まだ誰も入室していません</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {activeUsers.map((user) => (
                   <div
                     key={user.userName}
-                    className={`px-4 py-2 rounded-lg ${
+                    className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg text-xs sm:text-sm ${
                       user.userName === userName.trim()
                         ? 'bg-blue-100 text-blue-800 font-semibold'
                         : 'bg-gray-100 text-gray-700'
                     }`}
                   >
                     {user.userName}
-                    {user.userName === userName.trim() && ' (あなた)'}
+                    {user.userName === userName.trim() && <span className="hidden sm:inline"> (あなた)</span>}
                   </div>
                 ))}
               </div>
@@ -422,47 +388,12 @@ function App() {
 
         {!showResults ? (
           /* 投票画面 */
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-4 sm:mb-5 md:mb-6 text-center">
               カードを選択してください
             </h2>
-
-            {/* 投票状況 */}
-            {userName.trim() && activeUsers.length > 0 && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
-                  投票状況 ({userVoteStatus.filter(u => u.hasVoted).length}/{activeUsers.length}人投票済み)
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {userVoteStatus.map((status) => (
-                    <div
-                      key={status.userName}
-                      className={`px-3 py-2 rounded-lg flex items-center gap-2 ${
-                        status.hasVoted
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      } ${
-                        status.isCurrentUser ? 'ring-2 ring-blue-500' : ''
-                      }`}
-                    >
-                      {status.hasVoted ? (
-                        <span className="text-green-600">✓</span>
-                      ) : (
-                        <span className="text-yellow-600">⏱</span>
-                      )}
-                      <span className={`text-sm font-medium ${
-                        status.isCurrentUser ? 'font-semibold' : ''
-                      }`}>
-                        {status.userName}
-                        {status.isCurrentUser && ' (あなた)'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
               {FIBONACCI_CARDS.map((card) => {
                 const isSelected = selectedCard === card
                 const cardValue = typeof card === 'number' ? card : card
@@ -473,7 +404,7 @@ function App() {
                     onClick={() => handleCardSelect(card)}
                     disabled={!userName.trim()}
                     className={`
-                      aspect-square p-4 rounded-lg font-bold text-xl transition-all
+                      aspect-square p-2 sm:p-3 md:p-4 rounded-lg font-bold text-base sm:text-lg md:text-xl transition-all
                       ${isSelected
                         ? 'bg-blue-600 text-white scale-105 shadow-lg'
                         : 'bg-white border-2 border-gray-300 text-gray-800 hover:border-blue-500 hover:shadow-md'
@@ -488,25 +419,25 @@ function App() {
             </div>
 
             {userVote && (
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-center text-gray-700">
+              <div className="mb-4 sm:mb-5 md:mb-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+                <p className="text-center text-sm sm:text-base text-gray-700">
                   <span className="font-semibold">{userVote.userName}</span> さんの投票: 
-                  <span className="text-2xl font-bold text-blue-600 ml-2">{userVote.value}</span>
+                  <span className="text-xl sm:text-2xl font-bold text-blue-600 ml-2">{userVote.value}</span>
                 </p>
               </div>
             )}
 
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center">
               <button
                 onClick={handleShowResults}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
               >
                 結果を表示
               </button>
               {votes.length > 0 && (
                 <button
                   onClick={handleNewRound}
-                  className="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+                  className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
                 >
                   新しいラウンドを開始
                 </button>
@@ -515,41 +446,41 @@ function App() {
           </div>
         ) : (
           /* 結果表示画面 */
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-4 sm:mb-5 md:mb-6 text-center">
               投票結果
             </h2>
 
             {votes.length === 0 ? (
-              <p className="text-center text-gray-600 py-8">
+              <p className="text-center text-sm sm:text-base text-gray-600 py-6 sm:py-8">
                 まだ投票がありません
               </p>
             ) : (
               <>
                 {/* 統計情報 */}
                 {stats.numericVotes.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-blue-50 p-4 rounded-lg text-center">
-                      <div className="text-sm text-gray-600 mb-1">平均</div>
-                      <div className="text-2xl font-bold text-blue-600">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
+                    <div className="bg-blue-50 p-3 sm:p-4 rounded-lg text-center">
+                      <div className="text-xs sm:text-sm text-gray-600 mb-1">平均</div>
+                      <div className="text-xl sm:text-2xl font-bold text-blue-600">
                         {stats.average.toFixed(1)}
                       </div>
                     </div>
-                    <div className="bg-green-50 p-4 rounded-lg text-center">
-                      <div className="text-sm text-gray-600 mb-1">最小</div>
-                      <div className="text-2xl font-bold text-green-600">
+                    <div className="bg-green-50 p-3 sm:p-4 rounded-lg text-center">
+                      <div className="text-xs sm:text-sm text-gray-600 mb-1">最小</div>
+                      <div className="text-xl sm:text-2xl font-bold text-green-600">
                         {stats.min}
                       </div>
                     </div>
-                    <div className="bg-orange-50 p-4 rounded-lg text-center">
-                      <div className="text-sm text-gray-600 mb-1">最大</div>
-                      <div className="text-2xl font-bold text-orange-600">
+                    <div className="bg-orange-50 p-3 sm:p-4 rounded-lg text-center">
+                      <div className="text-xs sm:text-sm text-gray-600 mb-1">最大</div>
+                      <div className="text-xl sm:text-2xl font-bold text-orange-600">
                         {stats.max}
                       </div>
                     </div>
-                    <div className="bg-purple-50 p-4 rounded-lg text-center">
-                      <div className="text-sm text-gray-600 mb-1">中央値</div>
-                      <div className="text-2xl font-bold text-purple-600">
+                    <div className="bg-purple-50 p-3 sm:p-4 rounded-lg text-center">
+                      <div className="text-xs sm:text-sm text-gray-600 mb-1">中央値</div>
+                      <div className="text-xl sm:text-2xl font-bold text-purple-600">
                         {stats.median.toFixed(1)}
                       </div>
                     </div>
@@ -557,20 +488,20 @@ function App() {
                 )}
 
                 {/* 投票一覧 */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                <div className="mb-4 sm:mb-5 md:mb-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                     全員の投票 ({votes.length}人)
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                     {votes.map((vote) => (
                       <div
                         key={`${vote.userName}-${vote.timestamp}`}
-                        className="p-4 border border-gray-200 rounded-lg bg-gray-50"
+                        className="p-3 sm:p-4 border border-gray-200 rounded-lg bg-gray-50"
                       >
-                        <div className="font-semibold text-gray-800 mb-1">
+                        <div className="font-semibold text-sm sm:text-base text-gray-800 mb-1">
                           {vote.userName}
                         </div>
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-xl sm:text-2xl font-bold text-blue-600">
                           {vote.value}
                         </div>
                       </div>
@@ -580,8 +511,8 @@ function App() {
 
                 {/* 投票分布の可視化 */}
                 {stats.numericVotes.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  <div className="mb-4 sm:mb-5 md:mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                       投票分布
                     </h3>
                     <div className="space-y-2">
@@ -590,17 +521,17 @@ function App() {
                         const percentage = (count / stats.numericVotes.length) * 100
                         
                         return (
-                          <div key={value} className="flex items-center gap-3">
-                            <div className="w-16 text-right font-semibold text-gray-700">
+                          <div key={value} className="flex items-center gap-2 sm:gap-3">
+                            <div className="w-10 sm:w-12 md:w-16 text-right font-semibold text-xs sm:text-sm text-gray-700">
                               {value}
                             </div>
-                            <div className="flex-1 bg-gray-200 rounded-full h-6 overflow-hidden">
+                            <div className="flex-1 bg-gray-200 rounded-full h-5 sm:h-6 overflow-hidden">
                               <div
                                 className="bg-blue-600 h-full rounded-full transition-all"
                                 style={{ width: `${percentage}%` }}
                               />
                             </div>
-                            <div className="w-12 text-sm text-gray-600">
+                            <div className="w-8 sm:w-10 md:w-12 text-xs sm:text-sm text-gray-600">
                               {count}票
                             </div>
                           </div>
@@ -610,19 +541,19 @@ function App() {
                   </div>
                 )}
 
-                <div className="flex gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center">
                   <button
                     onClick={() => {
                       loadVotes()
                       setShowResults(false)
                     }}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                   >
                     投票に戻る
                   </button>
                   <button
                     onClick={handleNewRound}
-                    className="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+                    className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
                   >
                     新しいラウンドを開始
                   </button>
@@ -637,4 +568,3 @@ function App() {
 }
 
 export default App
-
