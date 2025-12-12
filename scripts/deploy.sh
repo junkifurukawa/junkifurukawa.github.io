@@ -61,8 +61,16 @@ case $TARGET in
             cp packages/website/index.html ./
             mkdir -p dist
             cp -r packages/website/dist/styles.css ./dist/
-            cp -r packages/retrobutler-app/dist ./retrobutler
-            cp -r packages/planning-poker-app/dist ./planning-poker
+            
+            # 振り返りアプリをコピー（distの中身を直接コピー）
+            rm -rf retrobutler
+            mkdir -p retrobutler
+            cp -r packages/retrobutler-app/dist/* retrobutler/
+            
+            # Planning Pokerアプリをコピー（distの中身を直接コピー）
+            rm -rf planning-poker
+            mkdir -p planning-poker
+            cp -r packages/planning-poker-app/dist/* planning-poker/
             
             # 振り返りアプリのパスを修正（絶対パスを相対パスに変換）
             if [ -f retrobutler/index.html ]; then
