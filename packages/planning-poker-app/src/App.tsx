@@ -146,6 +146,11 @@ function App() {
     return newRoomId
   })
   
+  // 初期URLに?room=パラメータがあったかを記録
+  const [isInvitedRoom, setIsInvitedRoom] = useState<boolean>(() => {
+    return getRoomIdFromUrl() !== null
+  })
+  
   const [userName, setUserName] = useState<string>(() => {
     return localStorage.getItem('planning-poker-username') || ''
   })
@@ -163,10 +168,29 @@ function App() {
     }
   }, [userName])
 
-  // ルームIDが変更されたらURLを更新
+  // URLパラメータの変更を監視
   useEffect(() => {
-    setRoomIdInUrl(roomId)
-  }, [roomId])
+    const handlePopState = () => {
+      const urlRoomId = getRoomIdFromUrl()
+      if (urlRoomId && urlRoomId !== roomId) {
+        setRoomId(urlRoomId)
+        setIsInvitedRoom(true)
+      } else if (!urlRoomId && isInvitedRoom) {
+        // URLパラメータが削除された場合（通常は発生しないが念のため）
+        setIsInvitedRoom(false)
+      }
+    }
+    
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [roomId, isInvitedRoom])
+
+  // ルームIDが変更されたらURLを更新（招待されたルームでない場合のみ）
+  useEffect(() => {
+    if (!isInvitedRoom) {
+      setRoomIdInUrl(roomId)
+    }
+  }, [roomId, isInvitedRoom])
 
   // 投票を読み込む
   const loadVotes = () => {
@@ -285,6 +309,9 @@ function App() {
   }
 
   const handleCreateNewRoom = () => {
+    // 招待されたルームでは新しいルームを作成できない
+    if (isInvitedRoom) return
+    
     // 現在のルームから退出
     if (userName.trim()) {
       removeUserFromRoom(roomId, userName.trim())
@@ -292,6 +319,7 @@ function App() {
     
     const newRoomId = generateRoomId()
     setRoomId(newRoomId)
+    setIsInvitedRoom(false)
     setSelectedCard(null)
     setVotes([])
     setShowResults(false)
@@ -340,36 +368,27 @@ function App() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ルームID
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={roomId}
-                  readOnly
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                />
-                <button
-                  onClick={handleCopyRoomId}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-                >
-                  {copied ? '✓ コピー済み' : '📋 コピー'}
-                </button>
-              </div>
-            </div>
-            <div>
+            <div className="flex items-end gap-2">
               <button
-                onClick={handleCreateNewRoom}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors whitespace-nowrap"
+                onClick={handleCopyRoomId}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap font-semibold"
               >
-                新しいルーム
+                {copied ? '✓ コピー済み' : 'Copy Room!'}
               </button>
+              {!isInvitedRoom && (
+                <button
+                  onClick={handleCreateNewRoom}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors whitespace-nowrap"
+                >
+                  新しいルーム
+                </button>
+              )}
             </div>
           </div>
           <p className="text-sm text-gray-500 mt-4">
-            ルームIDをコピーして、チームメンバーに共有してください
+            {isInvitedRoom 
+              ? 'このルームに参加しています。URLをコピーして他のメンバーにも共有できます。'
+              : 'URLをコピーして、チームメンバーに共有してください'}
           </p>
         </div>
 
