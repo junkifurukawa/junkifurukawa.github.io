@@ -95,4 +95,4 @@ esac
 
 echo "✅ $APP_NAME アプリが作成完了したのだ！"
 echo "📂 場所: $PACKAGE_DIR"
-echo "🚀 開発開始: cd $PACKAGE_DIR && yarn dev" 
+echo "🚀 開発開始: cd $PACKAGE_DIR && npm run dev" 

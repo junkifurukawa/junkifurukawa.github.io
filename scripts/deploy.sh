@@ -21,7 +21,6 @@ cd ../../
 case $TARGET in
     "all")
         echo "🚀 全アプリケーションをビルド中..."
-        yarn workspaces run build
         
         echo "✅ 全アプリケーションのビルドが完了したのだ！"
         echo "📂 Webサイトの配信準備完了: packages/website/"
@@ -54,7 +53,6 @@ case $TARGET in
     
     "production")
         echo "🏭 本番環境用ビルド中..."
-        NODE_ENV=production yarn workspaces run build
         
         echo "🗂️  ビルド結果をアーカイブ中..."
         mkdir -p dist
