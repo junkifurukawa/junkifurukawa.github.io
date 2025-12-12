@@ -3,171 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Junki Furukawa | Portfolio</title>
-    <link rel="stylesheet" href="assets/css/reset.css?v=1.0">
-    <link rel="stylesheet" href="assets/css/main.css?v=1.0">
+    <meta name="description" content="Junki Furukawaの雑で便利なサービス集。振り返り執事などのツールを提供しています。">
+    <meta property="og:title" content="ふるじゅんの道具箱">
+    <meta property="og:description" content="Junki Furukawaの雑で便利なサービス集">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ja_JP">
+    <title>ふるじゅんの道具箱</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <header>
-        <h1>🐹 Junki Furukawa</h1>
-        <p>Developer & Creator</p>
+<body class="font-sans leading-relaxed text-gray-800 max-w-6xl mx-auto p-8">
+    <header class="text-center mb-12 pb-8 border-b-2 border-gray-200">
+        <h1 class="text-4xl md:text-5xl mb-2 text-gray-800">ふるじゅんの道具箱</h1>
+        <p class="text-lg text-gray-600">雑で便利なサービス集</p>
     </header>
 
     <main>
-        <section>
-            <h2>About</h2>
-            <p>ハム太郎が管理するmonorepo構成のポートフォリオサイトなのだ！</p>
+        <section class="about mb-12 text-center">
+            <h2 class="text-2xl mb-4 text-gray-700">About</h2>
+            <p class="text-gray-600">このリポジトリは Junki Furukawa の雑で便利なサービスを管理しています！</p>
         </section>
 
-        <section>
-            <h2>Projects</h2>
-            <ul>
-                <li><a href="retrobutler/">🤖 振り返り執事 (RetroButler)</a> - あなたに最適な振り返り手法を提案する診断アプリ</li>
-                <li>Personal Website</li>
-                <li>Like Button Component</li>
-                <li>Monorepo Development Environment</li>
-            </ul>
-        </section>
-
-        <!-- 振り返りアプリのプレビュー -->
-        <section>
-            <h2>🤖 振り返り執事 - プレビュー</h2>
-            <p>あなたに最適な振り返り手法をご提案いたします</p>
-            
-            <!-- App.tsxの内容を静的HTMLとして表示 -->
-            <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                <div class="max-w-2xl mx-auto">
-                    <div class="text-center mb-12">
-                        <h1 class="text-5xl font-bold text-gray-800 mb-4">振り返り執事</h1>
-                        <p class="text-xl text-gray-600">
-                            あなたに最適な振り返り手法をご提案いたします
-                        </p>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-lg p-8">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
-                            現在の状況をお聞かせください
-                        </h2>
-                        
-                        <form id="retroForm" class="space-y-8">
-                            <!-- 気分選択 -->
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-4">💭 今の気分は？</h3>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="モヤモヤしてる" class="mr-3">
-                                        <span class="text-gray-700">モヤモヤしてる</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="充実してる" class="mr-3">
-                                        <span class="text-gray-700">充実してる</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="感情的になってる" class="mr-3">
-                                        <span class="text-gray-700">感情的になってる</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="混乱してる" class="mr-3">
-                                        <span class="text-gray-700">混乱してる</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="落ち込み気味" class="mr-3">
-                                        <span class="text-gray-700">落ち込み気味</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="さっぱりしたい" class="mr-3">
-                                        <span class="text-gray-700">さっぱりしたい</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="feeling" value="疲れ気味" class="mr-3">
-                                        <span class="text-gray-700">疲れ気味</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- 目的選択 -->
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-4">🎯 何をしたい？</h3>
-                                <div class="space-y-2">
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="問題解決したい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">問題解決したい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="学びを抽出したい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">学びを抽出したい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="感情も含めて整理したい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">感情も含めて整理したい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="多角的に分析したい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">多角的に分析したい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="体系的に深く考えたい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">体系的に深く考えたい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="シンプルに整理したい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">シンプルに整理したい</span>
-                                    </label>
-                                    <label class="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="purpose" value="ポジティブに振り返りたい" class="mr-3 mt-1">
-                                        <span class="text-gray-700">ポジティブに振り返りたい</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- 時間選択 -->
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-4">⏰ どのくらい時間をかけたい？</h3>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="time" value="5-10分" class="mr-3">
-                                        <span class="text-gray-700">5-10分</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="time" value="15-30分" class="mr-3">
-                                        <span class="text-gray-700">15-30分</span>
-                                    </label>
-                                    <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                        <input type="radio" name="time" value="30-45分" class="mr-3">
-                                        <span class="text-gray-700">30-45分</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <button
-                                type="button"
-                                onclick="window.open('./retrobutler/', '_blank')"
-                                class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-                            >
-                                完全版で診断を開始 ✨
-                            </button>
-                        </form>
-                    </div>
+        <section class="tools mb-12">
+            <h2 class="text-2xl mb-8 text-gray-700">ツール一覧</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="tool-card bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col">
+                    <div class="text-5xl mb-4 text-center">🤖</div>
+                    <h3 class="text-2xl mb-2 text-gray-800 font-bold">振り返り執事</h3>
+                    <p class="text-gray-600 mb-6 flex-grow">あなたに最適な振り返り手法を提案する診断アプリ</p>
+                    <a href="./retrobutler/" class="text-blue-600 hover:text-blue-700 font-semibold mt-auto">開く →</a>
                 </div>
             </div>
         </section>
-
-        <section>
-            <h2>Tech Stack</h2>
-            <ul>
-                <li>React 18 + TypeScript</li>
-                <li>Yarn Workspaces (Monorepo)</li>
-                <li>GitHub Pages</li>
-                <li>HTML/CSS/JavaScript</li>
-            </ul>
-        </section>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Junki Furukawa - 🐹 ハム太郎製</p>
+    <footer class="text-center pt-8 border-t border-gray-200 text-gray-400 text-sm">
+        <p>&copy; 2025 Junki Furukawa</p>
     </footer>
-
-    <script src="assets/js/main.js" defer></script>
 </body>
 </html>

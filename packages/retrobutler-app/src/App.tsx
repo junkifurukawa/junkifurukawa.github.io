@@ -59,6 +59,12 @@ ${mode.questions.map((q, i) => `${i + 1}. ${q}？
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
         <div className="max-w-2xl mx-auto">
+          <nav className="mb-8 pb-4 border-b border-gray-200">
+            <a href="../" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-800 transition-colors">
+              <span className="mr-1">←</span>
+              ふるじゅんの道具箱に戻る
+            </a>
+          </nav>
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold text-gray-800 mb-4">振り返り執事</h1>
             <p className="text-xl text-gray-600">
@@ -161,6 +167,12 @@ ${mode.questions.map((q, i) => `${i + 1}. ${q}？
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
+        <nav className="mb-8 pb-4 border-b border-gray-200">
+          <a href="../" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-800 transition-colors">
+            <span className="mr-1">←</span>
+            ふるじゅんの道具箱に戻る
+          </a>
+        </nav>
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">あなたにおすすめの振り返り手法</h1>
           <p className="text-gray-600">最適度の高い順に3つご提案いたします</p>
