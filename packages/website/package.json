@@ -5,9 +5,19 @@
   "description": "Junki Furukawa's personal website",
   "scripts": {
     "dev": "python3 -m http.server 8000",
-    "build": "echo 'Static site - no build required'",
-    "clean": "echo 'Static site - no clean required'"
+    "build": "npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
+    "build:watch": "npx tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
+    "clean": "rm -rf dist"
   },
-  "keywords": ["website", "personal", "portfolio"],
-  "author": "Junki Furukawa"
-} 
+  "keywords": [
+    "website",
+    "personal",
+    "portfolio"
+  ],
+  "author": "Junki Furukawa",
+  "devDependencies": {
+    "autoprefixer": "10.4.22",
+    "postcss": "8.5.6",
+    "tailwindcss": "3.4.19"
+  }
+}

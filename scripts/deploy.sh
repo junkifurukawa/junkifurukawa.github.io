@@ -29,9 +29,18 @@ build_planning_poker() {
     cd ../../
 }
 
+# メインWebサイトのCSSをビルド（共通処理）
+build_website_css() {
+    echo "🎨 メインWebサイトのCSSをビルド中..."
+    cd packages/website
+    npm run build
+    cd ../../
+}
+
 case $TARGET in
     "all")
         echo "🚀 全アプリケーションをビルド中..."
+        build_website_css
         build_retrobutler
         build_planning_poker
         
@@ -42,6 +51,7 @@ case $TARGET in
     
     "website")
         echo "🌐 メインWebサイトをデプロイ準備中..."
+        build_website_css
         build_retrobutler
         build_planning_poker
         
@@ -49,6 +59,8 @@ case $TARGET in
         if [ "$2" = "github-pages" ]; then
             echo "📄 GitHub Pages用にファイルをコピー中..."
             cp packages/website/index.html ./
+            mkdir -p dist
+            cp -r packages/website/dist/styles.css ./dist/
             cp -r packages/retrobutler-app/dist ./retrobutler
             cp -r packages/planning-poker-app/dist ./planning-poker
             
